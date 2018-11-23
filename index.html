@@ -1,0 +1,63 @@
+<!DOCTYPE html >
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <title>Dist Pravia Clientes</title>
+		 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css"/>
+     <link rel="stylesheet" href="leaflet-search.css"/>
+     
+   <style>
+   html, body {
+    margin:0;
+   height: 100%;
+    }
+   	#mapid { height: 100%; }
+   </style>
+  </head>
+  <body>
+    <div id="Titulo" style='background-color: #960000;color:white;text-style:bold;font-weight:bold;text-align:center;font-family:arial, helvetica, sans-serif;line-height:1;'>
+      
+    Distribuidora Pravia Clientes  </div>
+  	 <div id="mapid" >
+       
+  	 	
+  	 </div>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="leaflet-search.min.js"></script>  
+     <script>
+ var mymap = L.map('mapid').setView([12.4396,-86.8787], 14);
+ L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution:'&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributor'
+        }).addTo(mymap);
+ var marker;
+ var markersLayer = new L.LayerGroup();
+ mymap.addLayer(markersLayer);
+ var controlSearch = new L.Control.Search({
+  position:'topright',
+  layer: markersLayer,
+  initial: false,
+  zoom:20,
+  marker:false
+ });
+ mymap.addControl(controlSearch);
+
+          $.ajax({
+            type:'GET',
+            url:'getubicaciones.php',
+            success:function(datos){
+              var dat = jQuery.parseJSON(datos);
+                $.each(dat,function(i,value){
+                  console.log(dat[i]);
+                  marker = L.marker([parseFloat(dat[i].Latitude),parseFloat(dat[i].Longitude)],{title:dat[i].Id});
+                  marker.bindPopup("<b>"+dat[i].Id+"</b> "+dat[i].Nombre+"<br>Clase:"+dat[i].Clase+"<br>"+dat[i].Ruta);
+                  markersLayer.addLayer(marker);
+                    
+                  })
+                  }});
+
+
+  	 </script>
+  </body>
+</html>
